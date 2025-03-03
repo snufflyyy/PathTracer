@@ -1,4 +1,4 @@
-package com.braden.pathtracer;
+package com.braden.pathtracer.rendering;
 
 import com.braden.pathtracer.math.Vector3;
 
@@ -52,6 +52,6 @@ public class Viewport {
     public Vector3 getPixel(int x, int y) {
         float offsetX = (float) Math.random() - 0.5f;
         float offsetY = (float) Math.random() - 0.5f;
-        return firstPixel.add(new Vector3(pixelDeltaX * ((float) x + offsetX), pixelDeltaY * ((float) y + offsetY), 0.0f));
+        return firstPixel.getAdded(new Vector3(pixelDeltaX * ((float) x + offsetX), pixelDeltaY * ((float) y + offsetY), 0.0f));
     }
 }

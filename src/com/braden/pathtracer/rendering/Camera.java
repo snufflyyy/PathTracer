@@ -1,4 +1,4 @@
-package com.braden.pathtracer;
+package com.braden.pathtracer.rendering;
 
 import com.braden.pathtracer.math.*;
 
@@ -59,13 +59,13 @@ public class Camera {
                 Color pixelColor = new Color();
 
                 for (int i = 0; i < samplesPerPixel; i++) {
-                    Vector3 currentPixel = position.add(viewport.getPixel(x, y).subtract(new Vector3(0.0f, 0.0f, focalLength)));
-                    Ray ray = new Ray(position, currentPixel.subtract(position));
+                    Vector3 currentPixel = position.getAdded(viewport.getPixel(x, y).getSubtracted(new Vector3(0.0f, 0.0f, focalLength)));
+                    Ray ray = new Ray(position, currentPixel.getSubtracted(position));
 
-                    pixelColor = pixelColor.add(getColor(ray, world, maxBounces));
+                    pixelColor = pixelColor.getAdded(getColor(ray, world, maxBounces));
                 }
 
-                pixels[y * imageWidth + x] = pixelColor.scale( 1.0f / samplesPerPixel).getGammaCorrected().getRGB();
+                pixels[y * imageWidth + x] = pixelColor.getScaled(1.0f / samplesPerPixel).getGammaCorrected().getRGB();
             }
         }
         long endTime = System.currentTimeMillis();
@@ -93,8 +93,13 @@ public class Camera {
         }
 
         if (hitAnything) {
-            Vector3 direction = rayHit.getNormal().add(Vector3.getRandomNormalized());
-            return getColor(new Ray(rayHit.getHitPosition(), direction), world, bounceCount - 1).scale(0.25f);
+            Ray outcomingRay = new Ray();
+            Color attenuation = new Color();
+
+            if (rayHit.getMaterial().scatter(ray, rayHit, attenuation, outcomingRay)) {
+                return attenuation.getMultiplied(getColor(outcomingRay, world, bounceCount -1));
+            }
+            return new Color();
         }
 
         // sky gradiant
