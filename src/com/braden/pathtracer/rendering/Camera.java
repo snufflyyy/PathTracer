@@ -95,11 +95,13 @@ public class Camera {
         if (hitAnything) {
             Ray outcomingRay = new Ray();
             Color attenuation = new Color();
+            Color emissive = new Color();
 
-            if (rayHit.getMaterial().scatter(ray, rayHit, attenuation, outcomingRay)) {
-                return attenuation.getMultiplied(getColor(outcomingRay, world, bounceCount -1));
+            if (rayHit.getMaterial().scatter(ray, rayHit, attenuation, emissive, outcomingRay)) {
+                return emissive.getAdded(attenuation.getMultiplied(getColor(outcomingRay, world, bounceCount - 1)));
             }
-            return new Color();
+
+            return emissive;
         }
 
         // sky gradiant

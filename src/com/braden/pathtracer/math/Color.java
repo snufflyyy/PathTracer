@@ -76,6 +76,10 @@ public class Color {
     }
 
     public int getRGB() {
+        if (red > 1.0f) { red = 1.0f; }
+        if (green > 1.0f) { green = 1.0f; }
+        if (blue > 1.0f) { blue = 1.0f; }
+
         return (0xFF << 24) | (((int) (red * 255.0f) & 0xFF) << 16) | (((int) (green * 255.0f) & 0xFF) << 8) | ((int) (blue * 255.0f) & 0xFF);
     }
 
